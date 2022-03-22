@@ -2,42 +2,53 @@ import re
 
 class Statistic:
 
-   def __init__(self, str, stat):
-      self.string = str
-      self.str = str
-      self.stat = stat
-      self.str_list = []
+   def __init__(self, text, cmd, oldword, newword):
+      self.text = text
+      self.split_text = text
+      self.cmd = cmd
+      self.word_list = []
+      self.new_word = newword
+      self.old_word = oldword
 
    def separator(self):
       punc = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
-      for ele in self.str:
+      for ele in self.split_text:
          if ele in punc:
-            self.str = self.str.replace(ele, ' ')
-      self.str = re.split('\n|\t| ', self.str)
+            self.split_text = self.split_text.replace(ele, ' ')
+      self.split_text = re.split('\n|\t| ', self.split_text)
 
-      while('' in self.str):
-         self.str.remove('')
+      while('' in self.split_text):
+         self.split_text.remove('')
 
    def stringList(self):
-      for i in self.str:
-         if i not in self.str_list:
-            self.str_list.append(i)
+      for i in self.split_text:
+         if i not in self.word_list:
+            self.word_list.append(i)
 
    def statistic(self):
       self.separator()
       self.stringList()
-      if self.stat == 'frequency':
+      if self.cmd == 'frequency':
          result = self.calcFrequency()
+      elif self.cmd == 'replace':
+         result = self.replaceWords()
       return result
 
    def calcFrequency(self):
       word_freq = []
-      for i in range(0, len(self.str_list)):
-         word_freq.append(self.str.count(self.str_list[i]))
+      for i in range(0, len(self.word_list)):
+         word_freq.append(self.split_text.count(self.word_list[i]))
       return word_freq
 
+   def replaceWords(self):
+      new_text = self.text.replace(self.old_word, self.new_word)
+      return new_text
+   
    def getWordList(self):
-      return self.str_list
+      return self.word_list
 
    def getStatistic(self):
       return self.statistic()
+
+   def getText(self):
+      return self.text
