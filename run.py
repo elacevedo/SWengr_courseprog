@@ -3,12 +3,17 @@ import os
 import re
 from statistic import Statistic
 
-def printResult(cmd, text, outfile, old_word, new_word):
+def getResult(command, cmd, old_word, new_word):
+   command.setReplacementWords(old_word, new_word)
+   command.setCommand(cmd)
+   result = command.getStatistic()
+   word_list = command.getWordList()
+   return result, word_list
+
+def printResult(command, cmd, text, outfile, old_word, new_word):
    if cmd == "frequency":
-      statistic = Statistic(text, cmd, old_word, new_word)
-      word_list = statistic.getWordList()
-      result = statistic.getStatistic()
-      print(statistic.getText())
+      result, word_list = getResult(command, cmd, old_word, new_word)
+      print(text)
       with open(outfile, 'a') as ofile:
          print(text, file = ofile)
       for i in range(0, len(word_list)):
@@ -16,20 +21,19 @@ def printResult(cmd, text, outfile, old_word, new_word):
          with open(outfile, 'a') as ofile:
             print("\"{}\" frequency is {}".format(word_list[i], result[i]), file = ofile)
    elif cmd == "replace":
-      statistic = Statistic(text, cmd, old_word, new_word)
-      result = statistic.getStatistic()
-      print(statistic.getText())
+      result = getResult(command, cmd, old_word, new_word)[0]
+      print(text)
       print(result)
       with open(outfile, 'a') as ofile:
          print(text, file = ofile)
          print(result, file = ofile)
 
 def main(argv):
-   infile = ''
-   outfile = ''
-   cmd = ''
-   new_word = ''
-   old_word = ''
+   infile = ''    #input file path
+   outfile = ''   #output file path
+   cmd = ''       #command to be performed(frequency, replace...)
+   new_word = ''  #new word to replace old word for replace command
+   old_word = ''  #old word to be replaced by new word for replace command
 
    try:
       infile = argv[1]
@@ -44,9 +48,11 @@ def main(argv):
       sys.exit(2)
 
    with open(infile, 'r') as file:
-      text = file.read()
+      text = file.read()           #string read from file
 
-   printResult(cmd, text, outfile, old_word, new_word)
+   command = Statistic(text)       #class object
+   getResult(command, cmd, old_word, new_word)
+   printResult(command, cmd, text, outfile, old_word, new_word)
 
 if __name__=="__main__":
    main(sys.argv)
