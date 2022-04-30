@@ -3,6 +3,7 @@ Project Topic: Strings and Words
 
 Author: Erin Acevedo
 
-Run:
-python run.py INFILE_PATH OUTFILE_PATH frequency
+Run:\n
+python run.py INFILE_PATH OUTFILE_PATH frequency\n
+
 python run.py INFILE_PATH OUTFILE_PATH replace OLD_WORD NEW_WORD
